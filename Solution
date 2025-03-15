@@ -1,0 +1,32 @@
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+class Solution {
+    public int[] relativeSortArray(int[] arr1, int[] arr2) {
+        // Create a map to store the order of elements in arr2
+        Map<Integer, Integer> order = new HashMap<>();
+        for (int i = 0; i < arr2.length; i++) {
+            order.put(arr2[i], i);
+        }
+
+        // Sort arr1 based on the order defined in arr2, and then by the value itself for elements not in arr2
+        return Arrays.stream(arr1)
+                .boxed()
+                .sorted((a, b) -> {
+                    int orderA = order.getOrDefault(a, Integer.MAX_VALUE);
+                    int orderB = order.getOrDefault(b, Integer.MAX_VALUE);
+                    return orderA != orderB ? Integer.compare(orderA, orderB) : Integer.compare(a, b);
+                })
+                .mapToInt(Integer::intValue)
+                .toArray();
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] arr1 = {4, 3, 2, 1, 5, 6};
+        int[] arr2 = {1, 2, 3};
+        int[] result = solution.relativeSortArray(arr1, arr2);
+        System.out.println(Arrays.toString(result));  // Output: [1, 2, 3, 4, 5, 6]
+    }
+}
